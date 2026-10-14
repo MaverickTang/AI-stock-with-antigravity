@@ -65,7 +65,150 @@ def format_symbol_for_sina(code: str) -> str:
 
 
 def infer_asset_type(code: str) -> str:
-    return "etf" if str(code).startswith(("51", "56", "58", "15", "16")) else "stock"
+    """
+    资产类型自动判定：
+    以 51、58、15、16 开头自动识别为 ETF，其余识别为普通 A股
+    """
+    code_str = str(code).strip()
+    if code_str.startswith(("51", "58", "15", "16")):
+        return "etf"
+    return "stock"
+
+
+def infer_etf_sector(name: str, code: str = "") -> str:
+    """根据 ETF 官方名称或代码智能推导所属板块/分类"""
+    n = name or ""
+    if any(k in n for k in ["半导体", "芯片", "集成电路"]):
+        return "半导体芯片 / 科技成长"
+    if any(k in n for k in ["恒生", "港股", "中概", "海外", "纳斯达克", "标普"]):
+        return "港股科技 / 海外互联网"
+    if any(k in n for k in ["创业板", "创成长", "创50"]):
+        return "创业板 / 科技创新"
+    if any(k in n for k in ["科创", "科创50", "科创100"]):
+        return "科创板 / 硬科技"
+    if any(k in n for k in ["沪深300", "300"]):
+        return "核心资产 / 沪深300"
+    if any(k in n for k in ["中证500", "500"]):
+        return "中盘成长 / 中证500"
+    if any(k in n for k in ["中证1000", "1000", "2000"]):
+        return "小盘成长 / 中证1000"
+    if any(k in n for k in ["红利", "低波", "价值"]):
+        return "红利低波 / 价值防御"
+    if any(k in n for k in ["证券", "券商", "非银", "金融科技"]):
+        return "证券 / 互联网金融"
+    if any(k in n for k in ["医药", "医疗", "创新药", "生物"]):
+        return "医药生物 / 创新药"
+    if any(k in n for k in ["新能源", "光伏", "电池", "储能", "碳中和"]):
+        return "新能源 / 光伏储能"
+    if any(k in n for k in ["白酒", "酒", "消费", "食品", "饮料"]):
+        return "大消费 / 白酒食品"
+    if any(k in n for k in ["军工", "国防", "航空", "航天"]):
+        return "国防军工 / 高端装备"
+    if any(k in n for k in ["有色", "黄金", "稀土", "矿业", "金属"]):
+        return "有色金属 / 贵金属"
+    if any(k in n for k in ["银行"]):
+        return "大金融 / 银行"
+    if any(k in n for k in ["通信", "5G", "算力", "通信设备"]):
+        return "通信设备 / 算力基础设施"
+    if any(k in n for k in ["AI", "人工智能", "计算机", "软件", "大数据"]):
+        return "计算机 / 人工智能"
+    if any(k in n for k in ["游戏", "传媒", "动漫", "影视"]):
+        return "传媒娱乐 / 游戏"
+    if any(k in n for k in ["地产", "房地产", "基建", "建筑"]):
+        return "房地产 / 传统基建"
+    if any(k in n for k in ["电力", "煤炭", "石油", "石化", "能源"]):
+        return "能源动力 / 资源采掘"
+    if any(k in n for k in ["汽车", "智能车"]):
+        return "汽车制造 / 智能驾驶"
+    return "指数ETF / 行业基金"
+
+
+def infer_stock_sector(name: str, code: str = "") -> str:
+    """备用股票板块推导 (当东财行业接口未返回时使用)"""
+    n = name or ""
+    if any(k in n for k in ["茅台", "五粮液", "汾酒", "泸州老窖", "酒"]):
+        return "白酒 / 饮料制造"
+    if any(k in n for k in ["东财", "财富", "证券", "中信", "华泰", "招商"]):
+        return "证券 / 互联网金融"
+    if any(k in n for k in ["通信", "移远", "中际", "新易盛", "天孚", "光迅"]):
+        return "通信设备 / 光模块"
+    if any(k in n for k in ["中芯", "华虹", "北方华创", "海光", "寒武纪", "微电子", "芯片"]):
+        return "半导体 / 先进制程"
+    if any(k in n for k in ["银行", "招商银行", "平安银行", "工商", "建设"]):
+        return "大金融 / 银行"
+    if any(k in n for k in ["宁德", "比亚迪", "隆基", "通威", "阳光电源"]):
+        return "新能源 / 动力电池"
+    if any(k in n for k in ["药", "生物", "恒瑞", "迈瑞", "药明"]):
+        return "医药生物 / 创新医疗"
+    return "A股制造业 / 综合"
+
+
+def fast_fetch_name_and_sector(code: str, asset_type: str) -> Dict[str, str]:
+    """
+    通过行情接口在 0.1 秒级毫秒抓取官方名称，并自动填充所属行业
+    """
+    code_str = str(code).strip()
+    sym = format_symbol_for_sina(code_str)
+    official_name = ""
+    sector = ""
+
+    headers = {
+        "Referer": "https://finance.sina.com.cn",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+    }
+
+    # 1. 0.1秒级新浪行情接口直连
+    try:
+        url = f"https://hq.sinajs.cn/list={sym}"
+        resp = requests.get(url, headers=headers, timeout=1.0)
+        resp.encoding = "gbk"
+        m = re.search(r'var hq_str_\w+="([^"]*)";', resp.text)
+        if m and m.group(1):
+            parts = m.group(1).split(",")
+            if parts and parts[0]:
+                official_name = parts[0].strip()
+    except Exception:
+        pass
+
+    # 2. 腾讯行情接口备选 (若新浪返回空或失败)
+    if not official_name:
+        try:
+            tx_url = f"http://qt.gtimg.cn/q={sym}"
+            resp = requests.get(tx_url, headers=headers, timeout=1.0)
+            resp.encoding = "gbk"
+            if "~" in resp.text:
+                parts = resp.text.split("~")
+                if len(parts) > 1 and parts[1]:
+                    official_name = parts[1].strip()
+        except Exception:
+            pass
+
+    # 3. 所属行业自动推导与抓取
+    if asset_type == "etf":
+        sector = infer_etf_sector(official_name, code_str)
+    else:
+        # 普通 A 股：优先通过东方财富秒级行情接口获取官方所属行业 (f127)
+        try:
+            market_id = "1" if code_str.startswith(("6", "5", "9")) else "0"
+            em_url = f"http://push2.eastmoney.com/api/qt/stock/get?invt=2&fltt=1&fields=f58,f127&secid={market_id}.{code_str}"
+            resp = requests.get(em_url, headers=headers, timeout=1.0)
+            if resp.status_code == 200:
+                data = resp.json().get("data") or {}
+                if not official_name and data.get("f58"):
+                    official_name = str(data.get("f58")).strip()
+                f127 = data.get("f127")
+                if f127 and f127 not in ("-", "None", ""):
+                    sector = str(f127).strip()
+        except Exception:
+            pass
+
+        if not sector:
+            sector = infer_stock_sector(official_name, code_str)
+
+    return {
+        "name": official_name or f"标的_{code_str}",
+        "sector": sector or ("指数/行业ETF" if asset_type == "etf" else "A股"),
+    }
 
 
 def _f(v, default=0.0):
@@ -178,20 +321,41 @@ class MarketDataEngine:
     # ------------------------------------------------------------------
     def enrich_stock_metadata(self, code: str, existing_item: Optional[Dict[str, Any]] = None,
                               quote: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """
+        极简添加改造核心：
+        1. 资产类型自动判定：以 51、58、15、16 开头自动识别为 ETF，其余识别为普通 A股；
+        2. 实时名称匹配：通过行情接口在 0.1 秒内自动抓取官方名称 (如 600519 自动识别为 贵州茅台)；
+        3. 板块与默认结构：自动填充所属行业，初始化默认仓位 (默认未建仓、止损线预设 6%)。
+        """
         code_str = str(code).strip()
         item = dict(existing_item or {})
         item["code"] = code_str
-        item.setdefault("asset_type", infer_asset_type(code_str))
 
-        if quote is None:
-            quote = self.get_realtime_quotes([code_str]).get(code_str, {})
-        if quote.get("name"):
+        # 1. 资产类型自动判定
+        asset_type = infer_asset_type(code_str)
+        item["asset_type"] = item.get("asset_type") or asset_type
+
+        # 2. 实时名称与行业匹配 (0.1秒级高速行情接口)
+        has_real_name = bool(item.get("name") and not str(item.get("name", "")).startswith("标的_"))
+        has_real_sector = bool(item.get("sector") and item.get("sector") not in ("待补充 (可在详情页修改)", "行业ETF", "A股"))
+
+        # 如果已有报价缓存且包含官方名称，优先使用
+        if quote and quote.get("name"):
             item["name"] = quote["name"]
+            has_real_name = True
+
+        if not has_real_name or not has_real_sector:
+            info = fast_fetch_name_and_sector(code_str, item["asset_type"])
+            if not has_real_name:
+                item["name"] = info["name"]
+            if not has_real_sector:
+                item["sector"] = info["sector"]
+
         item.setdefault("name", f"标的_{code_str}")
-
         if not item.get("sector"):
-            item["sector"] = "行业ETF" if item["asset_type"] == "etf" else "待补充 (可在详情页修改)"
+            item["sector"] = "指数ETF" if item["asset_type"] == "etf" else "A股"
 
+        # 3. 初始化默认仓位 (默认未建仓、止损线预设 6.0%)
         h = item.get("holding") if isinstance(item.get("holding"), dict) else {}
         h.setdefault("is_holding", False)
         h.setdefault("cost_price", 0.0)
@@ -200,13 +364,24 @@ class MarketDataEngine:
         h.setdefault("take_profit_pct", 15.0)
         item["holding"] = h
 
-        item.setdefault("strategy_note", "")
+        # 4. 默认策略备忘结构
+        if not item.get("strategy_note"):
+            if item["asset_type"] == "etf":
+                item["strategy_note"] = "指数ETF配置标的，顺势跟踪均线支撑，严格执行6%止损纪律。"
+            else:
+                item["strategy_note"] = "跟踪5日/20日均线支撑与量能异动，未建仓观察中，严格执行6%止损纪律。"
+
         return item
 
     @staticmethod
     def needs_enrich(item: Dict[str, Any]) -> bool:
-        return (not item.get("name") or not item.get("asset_type") or not isinstance(item.get("holding"), dict)
-                or "strategy_note" not in item or not item.get("sector"))
+        return (not item.get("name")
+                or str(item.get("name", "")).startswith("标的_")
+                or not item.get("asset_type")
+                or not isinstance(item.get("holding"), dict)
+                or "strategy_note" not in item
+                or not item.get("sector")
+                or item.get("sector") in ("待补充 (可在详情页修改)", "行业ETF", "A股"))
 
     # ------------------------------------------------------------------
     # 大盘指数
