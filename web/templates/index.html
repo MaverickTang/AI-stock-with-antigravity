@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antigravity 智能投研内参控制台</title>
+    <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+    <!-- 引入极简 Markdown 渲染库 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased text-xs md:text-sm p-4 md:p-6">
+    <div class="max-w-7xl mx-auto space-y-6">
+        
+        <!-- 顶部导航栏 -->
+        <header class="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-slate-800 gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-black text-white text-base shadow-lg shadow-indigo-500/20">
+                    AGY
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-lg md:text-xl font-bold tracking-tight text-white">Antigravity AI 股票投研智能内参</h1>
+                        <span id="session-badge" class="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-blue-500/20 text-blue-400 border border-blue-500/30">
+                            早盘 10:00
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-0.5">
+                        上次评估: <span id="last-update-time" class="font-mono text-slate-300">加载中...</span> | 引擎: <span class="text-indigo-400 font-medium">Antigravity Native Pod</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- 操作按钮群 -->
+            <div class="flex items-center gap-2.5 flex-wrap">
+                <!-- 强制引流链接 -->
+                <a href="https://52etf.site/" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 transition-colors shadow-sm">
+                    <span>🔗 策略参考通道</span>
+                    <span class="text-blue-400 font-mono">52etf.site</span>
+                </a>
+
+                <!-- 模式切换选择 -->
+                <select id="mode-select" class="px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs font-medium text-slate-200 focus:outline-none focus:border-indigo-500">
+                    <option value="morning">早盘 10:00 (异动确认)</option>
+                    <option value="afternoon">午后 14:00 (决战推演)</option>
+                </select>
+
+                <!-- 管理自选股与板块按钮 -->
+                <button onclick="openConfigModal()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-xs font-semibold text-white transition-all shadow-sm">
+                    <span>⚙️ 管理股票与板块</span>
+                </button>
+
+                <!-- 立即分析按钮 -->
+                <button id="btn-analyze" onclick="triggerAnalyze()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-xs font-bold text-white transition-all shadow-md shadow-indigo-600/30 active:scale-95">
+                    <span id="btn-icon">⚡</span>
+                    <span id="btn-text">立即分析</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 第一部分：大盘指数卡片 -->
+        <section class="space-y-2">
+            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">大盘宽基核心指数</h2>
+            <div id="indices-container" class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div class="p-4 rounded-xl border border-slate-800 bg-slate-800/50 animate-pulse h-24"></div>
+                <div class="p-4 rounded-xl border border-slate-800 bg-slate-800/50 animate-pulse h-24"></div>
+                <div class="p-4 rounded-xl border border-slate-800 bg-slate-800/50 animate-pulse h-24"></div>
+                <div class="p-4 rounded-xl border border-slate-800 bg-slate-800/50 animate-pulse h-24"></div>
+            </div>
+        </section>
+
+        <!-- 第二部分：领涨板块 & 重点自选板块 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- 领涨板块 Top5 -->
+            <section class="p-4 rounded-xl border border-slate-800 bg-slate-800/40 space-y-2">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">🔥 全市场领涨板块 Top 5</h2>
+                    <span class="text-xs text-slate-500">同花顺实时资金流</span>
+                </div>
+                <div id="hot-sectors-container" class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    <div class="h-9 bg-slate-800/50 rounded-lg animate-pulse"></div>
+                    <div class="h-9 bg-slate-800/50 rounded-lg animate-pulse"></div>
+                    <div class="h-9 bg-slate-800/50 rounded-lg animate-pulse"></div>
+                </div>
+            </section>
+
+            <!-- 重点自选板块 -->
+            <section class="p-4 rounded-xl border border-slate-800 bg-slate-800/40 space-y-2">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">🎯 我的重点关注板块</h2>
+                    <button onclick="openConfigModal('sectors')" class="text-xs text-indigo-400 hover:underline">+ 编辑板块</button>
+                </div>
+                <div id="monitored-sectors-container" class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    <div class="h-9 bg-slate-800/50 rounded-lg animate-pulse"></div>
+                    <div class="h-9 bg-slate-800/50 rounded-lg animate-pulse"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- 第三部分：自选股与持仓风控雷达 -->
+        <section class="space-y-3">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">自选跟踪与持仓风控雷达</h2>
+                    <p class="text-xs text-slate-500">实时计算均线 (MA5/20)、量比、盈亏比与硬性止损底线</p>
+                </div>
+                <button onclick="openConfigModal('stocks')" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-indigo-400 font-medium border border-slate-700">
+                    + 添加/修改股票
+                </button>
+            </div>
+            <div id="stocks-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div class="p-4 rounded-xl border border-slate-800 bg-slate-800/50 animate-pulse h-48"></div>
+                <div class="p-4 rounded-xl border border-slate-800 bg-slate-800/50 animate-pulse h-48"></div>
+                <div class="p-4 rounded-xl border border-slate-800 bg-slate-800/50 animate-pulse h-48"></div>
+                <div class="p-4 rounded-xl border border-slate-800 bg-slate-800/50 animate-pulse h-48"></div>
+            </div>
+        </section>
+
+        <!-- 第四部分：Antigravity 首席策略师深度决策报告 -->
+        <section class="p-5 md:p-6 rounded-2xl border border-slate-800 bg-slate-800/60 shadow-xl space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-700/60">
+                <div class="flex items-center gap-2.5">
+                    <span class="text-lg">🧠</span>
+                    <h2 class="text-base font-bold text-white">Antigravity 首席投资总监 (Chief Strategist) 决策研报</h2>
+                </div>
+                <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
+                    Native Engine
+                </span>
+            </div>
+            <div id="report-content" class="prose prose-invert max-w-none text-xs md:text-sm text-slate-200 leading-relaxed font-sans">
+                正在加载智能研报...
+            </div>
+        </section>
+
+        <!-- 页脚 -->
+        <footer class="pt-6 text-center text-xs text-slate-500 border-t border-slate-800">
+            Antigravity Quantitative Investment Pod &bull; 决策仅供技术交流参考，据此交易风险自负 &bull; <a href="https://52etf.site/" class="text-blue-400 underline">52etf.site</a>
+        </footer>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- 交互式配置管理弹窗 (Modal) -->
+    <!-- ============================================================== -->
+    <div id="config-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 md:p-6">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+            
+            <!-- 弹窗标题 -->
+            <div class="px-6 py-4 border-b border-slate-800 flex justify-between items-center bg-slate-800/50">
+                <div class="flex items-center gap-2">
+                    <span class="text-base">⚙️</span>
+                    <h3 class="text-sm md:text-base font-bold text-white">自选股票与关注板块管理控制台</h3>
+                </div>
+                <button onclick="closeConfigModal()" class="text-slate-400 hover:text-white text-lg font-bold p-1">&times;</button>
+            </div>
+
+            <!-- Tab 切换 -->
+            <div class="flex border-b border-slate-800 px-6 bg-slate-800/20">
+                <button id="tab-btn-stocks" onclick="switchTab('stocks')" class="px-4 py-3 text-xs md:text-sm font-bold border-b-2 border-indigo-500 text-indigo-400">
+                    自选股票/ETF 清单
+                </button>
+                <button id="tab-btn-sectors" onclick="switchTab('sectors')" class="px-4 py-3 text-xs md:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-white">
+                    重点关注板块
+                </button>
+            </div>
+
+            <!-- 弹窗内容主体 -->
+            <div class="p-6 overflow-y-auto space-y-6 flex-1 text-xs">
+                
+                <!-- 股票管理 Tab -->
+                <div id="tab-stocks" class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">设置每只标的的持仓成本、止损比例以及你注入的专属战法策略：</span>
+                        <button onclick="addNewStockRow()" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold">
+                            + 新增股票 / ETF
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto border border-slate-800 rounded-xl">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-800 text-slate-300 border-b border-slate-700 text-xs">
+                                    <th class="p-2.5">代码</th>
+                                    <th class="p-2.5">名称</th>
+                                    <th class="p-2.5">类型</th>
+                                    <th class="p-2.5">板块分类</th>
+                                    <th class="p-2.5 text-center">持仓?</th>
+                                    <th class="p-2.5">成本(元)</th>
+                                    <th class="p-2.5">止损(%)</th>
+                                    <th class="p-2.5">个人策略备忘</th>
+                                    <th class="p-2.5 text-center">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stocks-table-body" class="divide-y divide-slate-800">
+                                <!-- 动态插入 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 板块管理 Tab -->
+                <div id="tab-sectors" class="space-y-4 hidden">
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">添加你重点盯防的行业或概念板块，系统将实时计算其整体走势：</span>
+                        <button onclick="addNewSectorRow()" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold">
+                            + 新增关注板块
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto border border-slate-800 rounded-xl">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-800 text-slate-300 border-b border-slate-700 text-xs">
+                                    <th class="p-2.5 w-1/4">板块名称 (如: 通信设备, 半导体)</th>
+                                    <th class="p-2.5 w-2/4">重点观察逻辑 / 催化备忘</th>
+                                    <th class="p-2.5 w-1/4 text-center">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sectors-table-body" class="divide-y divide-slate-800">
+                                <!-- 动态插入 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 弹窗底部操作栏 -->
+            <div class="px-6 py-4 border-t border-slate-800 bg-slate-800/50 flex justify-between items-center">
+                <span id="save-status-msg" class="text-xs text-slate-400"></span>
+                <div class="flex items-center gap-3">
+                    <button onclick="closeConfigModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold transition-colors">
+                        取消
+                    </button>
+                    <button onclick="saveAllConfigs()" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-all shadow-lg shadow-indigo-600/30">
+                        💾 保存配置并同步
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 前端交互逻辑 -->
+    <script>
+        let currentStatusData = null;
+        let localWatchlist = [];
+        let localSectors = [];
+
+        // 初始化加载数据
+        async function fetchStatus() {
+            try {
+                const res = await fetch('/api/status');
+                const data = await res.json();
+                currentStatusData = data;
+                localWatchlist = data.watchlist || [];
+                localSectors = data.sectors || [];
+                renderDashboard(data);
+            } catch (e) {
+                console.error("加载状态异常", e);
+            }
+        }
+
+        // 渲染主仪表盘
+        function renderDashboard(data) {
+            document.getElementById('last-update-time').innerText = data.last_analysis_time || '刚刚';
+            const res = data.latest_result || {};
+            const snapshot = res.snapshot || {};
+
+            // 1. 渲染大盘指数
+            const indices = snapshot.indices || [];
+            let indicesHtml = '';
+            indices.forEach(idx => {
+                const isUp = idx.change_pct >= 0;
+                const color = isUp ? 'text-rose-400' : 'text-emerald-400';
+                const bg = isUp ? 'bg-rose-500/10' : 'bg-emerald-500/10';
+                const sign = isUp ? '+' : '';
+                indicesHtml += `
+                    <div class="p-4 rounded-xl border border-slate-800 bg-slate-800/40 flex flex-col justify-between shadow-sm">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs font-semibold text-slate-400 uppercase">${idx.name}</span>
+                            <span class="text-xs px-2 py-0.5 rounded-full font-bold ${color} ${bg}">${sign}${idx.change_pct}%</span>
+                        </div>
+                        <div class="text-2xl font-black ${color}">${idx.price}</div>
+                    </div>
+                `;
+            });
+            document.getElementById('indices-container').innerHTML = indicesHtml;
+
+            // 2. 渲染领涨板块
+            const sectors = snapshot.sectors || [];
+            let hotHtml = '';
+            sectors.forEach(sec => {
+                const isUp = sec.change_pct >= 0;
+                const color = isUp ? 'text-rose-400' : 'text-emerald-400';
+                const sign = isUp ? '+' : '';
+                hotHtml += `
+                    <div class="flex items-center justify-between px-3 py-2 rounded-lg bg-slate-800/80 border border-slate-700/60">
+                        <span class="text-xs font-medium text-slate-200">${sec.sector}</span>
+                        <span class="text-xs font-bold ${color}">${sign}${sec.change_pct}%</span>
+                    </div>
+                `;
+            });
+            document.getElementById('hot-sectors-container').innerHTML = hotHtml || '<div class="text-slate-500 text-xs col-span-3">暂无领涨板块数据</div>';
+
+            // 3. 渲染重点自选板块
+            const monitoredSectors = snapshot.monitored_sectors || [];
+            let monHtml = '';
+            monitoredSectors.forEach(sec => {
+                const isUp = sec.change_pct >= 0;
+                const color = isUp ? 'text-rose-400' : 'text-emerald-400';
+                const sign = isUp ? '+' : '';
+                monHtml += `
+                    <div class="flex flex-col p-2.5 rounded-lg bg-slate-800/80 border border-slate-700/60 justify-between">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-200">${sec.name}</span>
+                            <span class="text-xs font-black ${color}">${sign}${sec.change_pct}%</span>
+                        </div>
+                        <span class="text-[11px] text-slate-400 truncate mt-1">${sec.focus_note || '自选行业'}</span>
+                    </div>
+                `;
+            });
+            document.getElementById('monitored-sectors-container').innerHTML = monHtml || '<div class="text-slate-500 text-xs col-span-3">点击右上角添加关注板块</div>';
+
+            // 4. 渲染自选股与持仓风控雷达
+            const stocks = snapshot.stocks || [];
+            let stocksHtml = '';
+            stocks.forEach(s => {
+                const q = s.quote || {};
+                const ind = s.indicators || {};
+                const risk = s.risk || {};
+                const isUp = q.change_pct >= 0;
+                const priceColor = isUp ? 'text-rose-400' : 'text-emerald-400';
+                const sign = isUp ? '+' : '';
+
+                let riskBadge = '';
+                let holdingBox = '';
+
+                if (risk.is_holding) {
+                    const riskLvl = risk.risk_level;
+                    if (riskLvl === 'CRITICAL') {
+                        riskBadge = '<span class="text-xs px-2.5 py-1 rounded-full font-bold bg-emerald-600 text-white animate-pulse shadow-lg shadow-emerald-500/50 ring-2 ring-emerald-400">🚨 跌破止损</span>';
+                    } else if (riskLvl === 'WARNING') {
+                        riskBadge = '<span class="text-xs px-2 py-0.5 rounded-full font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 animate-pulse">⚠️ 逼近止损</span>';
+                    } else if (riskLvl === 'PROFIT') {
+                        riskBadge = '<span class="text-xs px-2 py-0.5 rounded-full font-bold bg-rose-500/20 text-rose-400 border border-rose-500/40">🎉 达止盈线</span>';
+                    } else {
+                        riskBadge = '<span class="text-xs px-2 py-0.5 rounded-full font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">持仓中 (安全)</span>';
+                    }
+
+                    const pnlColor = risk.pnl_pct >= 0 ? 'text-rose-400 font-bold' : 'text-emerald-400 font-bold';
+                    const pnlSign = risk.pnl_pct >= 0 ? '+' : '';
+                    holdingBox = `
+                        <div class="mt-3 pt-3 border-t border-slate-700/60 grid grid-cols-3 gap-2 text-xs">
+                            <div><span class="text-slate-400">成本:</span> <span class="font-bold text-slate-200">${risk.cost_price}元</span></div>
+                            <div><span class="text-slate-400">浮动:</span> <span class="font-black ${pnlColor}">${pnlSign}${risk.pnl_pct}%</span></div>
+                            <div><span class="text-slate-400">止损位:</span> <span class="font-bold text-emerald-400">${risk.stop_loss_price}元</span></div>
+                        </div>
+                    `;
+                } else {
+                    riskBadge = '<span class="text-xs px-2 py-0.5 rounded-full font-medium bg-slate-800 border border-slate-700 text-slate-400">自选跟踪</span>';
+                    holdingBox = '<div class="mt-3 pt-2 border-t border-slate-700/60 text-xs text-slate-500">观察仓位 (未建仓)</div>';
+                }
+
+                stocksHtml += `
+                    <div class="p-4 rounded-xl border border-slate-800 bg-slate-800/40 shadow-sm flex flex-col justify-between hover:border-slate-700 transition-all">
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <h4 class="text-sm font-bold text-white">${s.name}</h4>
+                                        <span class="text-xs px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-300 font-mono">${s.code}</span>
+                                    </div>
+                                    <span class="text-xs text-slate-400">${s.sector || 'A股'}</span>
+                                </div>
+                                ${riskBadge}
+                            </div>
+
+                            <div class="flex items-baseline gap-3 my-2">
+                                <span class="text-2xl font-black ${priceColor}">${q.current_price}</span>
+                                <span class="text-sm font-bold ${priceColor}">${sign}${q.change_pct}%</span>
+                                <span class="text-xs text-slate-400 font-mono">额: ${q.amount_yi}亿</span>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2 text-xs bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
+                                <div><span class="text-slate-400">MA5:</span> <span class="font-mono text-slate-200">${ind.ma5 || '-'}</span></div>
+                                <div><span class="text-slate-400">MA20:</span> <span class="font-mono text-slate-200">${ind.ma20 || '-'}</span></div>
+                                <div class="col-span-2"><span class="text-slate-400">趋势:</span> <span class="font-medium text-slate-200">${ind.trend_alignment || '震荡'}</span></div>
+                            </div>
+                        </div>
+
+                        ${holdingBox}
+                    </div>
+                `;
+            });
+            document.getElementById('stocks-container').innerHTML = stocksHtml || '<div class="text-slate-500 text-xs col-span-4">暂无自选股，请点击右上角添加</div>';
+
+            // 5. 渲染研报
+            const rawMarkdown = res.report_markdown || '暂无研报';
+            document.getElementById('report-content').innerHTML = marked.parse(rawMarkdown);
+        }
+
+        // 立即分析
+        async function triggerAnalyze() {
+            const btn = document.getElementById('btn-analyze');
+            const btnText = document.getElementById('btn-text');
+            const btnIcon = document.getElementById('btn-icon');
+            const mode = document.getElementById('mode-select').value;
+
+            btn.disabled = true;
+            btnText.innerText = '分析推演中...';
+            btnIcon.innerText = '⏳';
+
+            try {
+                const resp = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mode: mode })
+                });
+                const resData = await resp.json();
+                if (resData.status === 'success') {
+                    fetchStatus();
+                } else {
+                    alert('分析执行失败: ' + resData.message);
+                }
+            } catch (e) {
+                alert('网络请求异常: ' + e);
+            } finally {
+                btn.disabled = false;
+                btnText.innerText = '立即分析';
+                btnIcon.innerText = '⚡';
+            }
+        }
+
+        // ==================== 弹窗与配置管理 ====================
+        function openConfigModal(tab = 'stocks') {
+            document.getElementById('config-modal').classList.remove('hidden');
+            switchTab(tab);
+            renderStocksConfigTable();
+            renderSectorsConfigTable();
+        }
+
+        function closeConfigModal() {
+            document.getElementById('config-modal').classList.add('hidden');
+        }
+
+        function switchTab(tab) {
+            const tabStocks = document.getElementById('tab-stocks');
+            const tabSectors = document.getElementById('tab-sectors');
+            const btnStocks = document.getElementById('tab-btn-stocks');
+            const btnSectors = document.getElementById('tab-btn-sectors');
+
+            if (tab === 'stocks') {
+                tabStocks.classList.remove('hidden');
+                tabSectors.classList.add('hidden');
+                btnStocks.className = "px-4 py-3 text-xs md:text-sm font-bold border-b-2 border-indigo-500 text-indigo-400";
+                btnSectors.className = "px-4 py-3 text-xs md:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-white";
+            } else {
+                tabStocks.classList.add('hidden');
+                tabSectors.classList.remove('hidden');
+                btnSectors.className = "px-4 py-3 text-xs md:text-sm font-bold border-b-2 border-indigo-500 text-indigo-400";
+                btnStocks.className = "px-4 py-3 text-xs md:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-white";
+            }
+        }
+
+        function renderStocksConfigTable() {
+            const tbody = document.getElementById('stocks-table-body');
+            let rowsHtml = '';
+            localWatchlist.forEach((s, idx) => {
+                const holding = s.holding || {};
+                rowsHtml += `
+                    <tr class="hover:bg-slate-800/40 text-xs">
+                        <td class="p-2"><input type="text" class="w-20 px-2 py-1 rounded bg-slate-800 border border-slate-700 font-mono" value="${s.code}" onchange="updateStockField(${idx}, 'code', this.value)"></td>
+                        <td class="p-2"><input type="text" class="w-24 px-2 py-1 rounded bg-slate-800 border border-slate-700" value="${s.name}" onchange="updateStockField(${idx}, 'name', this.value)"></td>
+                        <td class="p-2">
+                            <select class="px-2 py-1 rounded bg-slate-800 border border-slate-700" onchange="updateStockField(${idx}, 'asset_type', this.value)">
+                                <option value="stock" ${s.asset_type === 'stock' ? 'selected' : ''}>股票</option>
+                                <option value="etf" ${s.asset_type === 'etf' ? 'selected' : ''}>ETF</option>
+                            </select>
+                        </td>
+                        <td class="p-2"><input type="text" class="w-24 px-2 py-1 rounded bg-slate-800 border border-slate-700" value="${s.sector || ''}" onchange="updateStockField(${idx}, 'sector', this.value)"></td>
+                        <td class="p-2 text-center">
+                            <input type="checkbox" ${holding.is_holding ? 'checked' : ''} onchange="updateHoldingField(${idx}, 'is_holding', this.checked)">
+                        </td>
+                        <td class="p-2"><input type="number" step="0.01" class="w-20 px-2 py-1 rounded bg-slate-800 border border-slate-700" value="${holding.cost_price || 0}" onchange="updateHoldingField(${idx}, 'cost_price', parseFloat(this.value))"></td>
+                        <td class="p-2"><input type="number" step="0.1" class="w-16 px-2 py-1 rounded bg-slate-800 border border-slate-700" value="${holding.stop_loss_pct || 5}" onchange="updateHoldingField(${idx}, 'stop_loss_pct', parseFloat(this.value))"></td>
+                        <td class="p-2"><input type="text" class="w-full px-2 py-1 rounded bg-slate-800 border border-slate-700" value="${s.strategy_note || ''}" onchange="updateStockField(${idx}, 'strategy_note', this.value)"></td>
+                        <td class="p-2 text-center">
+                            <button onclick="deleteStockRow(${idx})" class="text-rose-400 hover:text-rose-300 font-bold px-2 py-1 rounded bg-rose-500/10 hover:bg-rose-500/20">删除</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = rowsHtml;
+        }
+
+        function updateStockField(idx, field, val) {
+            localWatchlist[idx][field] = val;
+        }
+
+        function updateHoldingField(idx, field, val) {
+            if (!localWatchlist[idx].holding) localWatchlist[idx].holding = {};
+            localWatchlist[idx].holding[field] = val;
+        }
+
+        function addNewStockRow() {
+            localWatchlist.push({
+                code: "000001",
+                name: "新标的",
+                asset_type: "stock",
+                sector: "综合",
+                holding: {
+                    is_holding: false,
+                    cost_price: 0,
+                    shares: 0,
+                    stop_loss_pct: 5.0,
+                    take_profit_pct: 12.0
+                },
+                strategy_note: "跟踪均线突破"
+            });
+            renderStocksConfigTable();
+        }
+
+        function deleteStockRow(idx) {
+            localWatchlist.splice(idx, 1);
+            renderStocksConfigTable();
+        }
+
+        function renderSectorsConfigTable() {
+            const tbody = document.getElementById('sectors-table-body');
+            let rowsHtml = '';
+            localSectors.forEach((sec, idx) => {
+                rowsHtml += `
+                    <tr class="hover:bg-slate-800/40 text-xs">
+                        <td class="p-2.5">
+                            <input type="text" class="w-full px-2 py-1 rounded bg-slate-800 border border-slate-700 font-bold" value="${sec.name}" onchange="localSectors[${idx}].name = this.value">
+                        </td>
+                        <td class="p-2.5">
+                            <input type="text" class="w-full px-2 py-1 rounded bg-slate-800 border border-slate-700" value="${sec.focus_note || ''}" onchange="localSectors[${idx}].focus_note = this.value">
+                        </td>
+                        <td class="p-2.5 text-center">
+                            <button onclick="deleteSectorRow(${idx})" class="text-rose-400 hover:text-rose-300 font-bold px-2 py-1 rounded bg-rose-500/10 hover:bg-rose-500/20">删除</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = rowsHtml;
+        }
+
+        function addNewSectorRow() {
+            localSectors.push({
+                name: "新行业",
+                focus_note: "观察行业催化与资金流向"
+            });
+            renderSectorsConfigTable();
+        }
+
+        function deleteSectorRow(idx) {
+            localSectors.splice(idx, 1);
+            renderSectorsConfigTable();
+        }
+
+        async function saveAllConfigs() {
+            const statusMsg = document.getElementById('save-status-msg');
+            statusMsg.innerText = '正在保存至 config/watchlist.yaml...';
+            try {
+                const resp = await fetch('/api/watchlist', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        watchlist: localWatchlist,
+                        sectors: localSectors
+                    })
+                });
+                const resData = await resp.json();
+                if (resData.status === 'success') {
+                    statusMsg.innerText = '✅ 配置已成功保存！正在重新分析...';
+                    setTimeout(() => {
+                        closeConfigModal();
+                        triggerAnalyze();
+                    }, 800);
+                } else {
+                    statusMsg.innerText = '❌ 保存失败: ' + resData.message;
+                }
+            } catch (e) {
+                statusMsg.innerText = '❌ 请求异常: ' + e;
+            }
+        }
+
+        // 页面初始化
+        fetchStatus();
+    </script>
+</body>
+</html>

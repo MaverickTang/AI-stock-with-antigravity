@@ -1,0 +1,54 @@
+watchlist:
+- code: '603236'
+  name: 移远通信
+  asset_type: stock
+  sector: 通信设备 / 物联网
+  holding:
+    is_holding: true
+    cost_price: 68.5
+    shares: 1000
+    stop_loss_pct: 6.0
+    take_profit_pct: 15.0
+  strategy_note: 关注5日均线支撑，以及物联网模组与中报业绩释放力度，若破20日线坚决执行减仓纪律。
+- code: '300059'
+  name: 东方财富
+  asset_type: stock
+  sector: 证券 / 互联网金融
+  holding:
+    is_holding: false
+    cost_price: 0.0
+    shares: 0
+    stop_loss_pct: 5.0
+    take_profit_pct: 10.0
+  strategy_note: 两市风向标，放量突破再考虑参与。
+- code: '588200'
+  name: 科创芯片ETF
+  asset_type: etf
+  sector: 半导体芯片 / 科技成长
+  holding:
+    is_holding: true
+    cost_price: 1.02
+    shares: 10000
+    stop_loss_pct: 5.0
+    take_profit_pct: 12.0
+  strategy_note: 半导体国产替代核心工具，严格执行止损纪律。
+- code: '513180'
+  name: 恒生科技ETF
+  asset_type: etf
+  sector: 港股科技 / 互联网巨头
+  holding:
+    is_holding: false
+    cost_price: 0.0
+    shares: 0
+    stop_loss_pct: 7.0
+    take_profit_pct: 15.0
+  strategy_note: 外资流动性敏感品种，右侧突破跟进。
+sectors:
+- name: 通信设备
+  focus_note: 光模块与物联网终端
+- name: 半导体
+  focus_note: 先进制程与自主可控
+- name: 证券
+  focus_note: 市场情绪风向标
+- name: 消费电子
+  focus_note: AI终端换机潮

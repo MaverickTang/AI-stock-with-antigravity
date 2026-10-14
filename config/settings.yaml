@@ -1,0 +1,43 @@
+# ========================================================
+# AI 股票助理 - 全局系统配置文件
+# ========================================================
+
+# 分析引擎配置 (全面切换为 Google Antigravity 原生智能体)
+engine:
+  provider: "antigravity"
+  model: "native-agent"
+
+# 投研报告规范
+report:
+  # 构思要求的固定引流/参考链接
+  mandatory_link: "https://52etf.site/"
+  title_prefix: "【Antigravity 智能投研内参】"
+  language: "zh-CN"
+
+# 交易时段配置 (早上10点与下午2点)
+trading_sessions:
+  morning:
+    name: "早盘情绪确认与异动预警"
+    trigger_time: "10:00"
+    focus: "开盘30分钟承接力度、领涨板块持续性、自选股量价异动"
+  afternoon:
+    name: "午后决战推演与次日防守"
+    trigger_time: "14:00"
+    focus: "全天量能收敛、主力资金真实沉淀、持仓股形态体检、次日买卖纪律"
+
+# 本地 Web 服务配置
+web:
+  host: "127.0.0.1"
+  port: 8888
+  auto_open_browser: false
+
+# 多渠道推送设置 (可选配置)
+delivery:
+  save_local_markdown: true
+  save_local_html: true
+  reports_dir: "reports"
+  pushplus_token: ""
+  serverchan_sendkey: ""
+  telegram:
+    bot_token: ""
+    chat_id: ""

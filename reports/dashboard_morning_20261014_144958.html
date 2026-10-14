@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antigravity 智能投研内参</title>
+    <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+</head>
+<body class="bg-[var(--background)] text-[var(--foreground)] p-4 md:p-6 min-h-screen font-sans antialiased text-xs md:text-sm">
+    <div class="max-w-6xl mx-auto space-y-6">
+        
+        <!-- 头部 Header -->
+        <header class="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-[var(--border)] gap-3">
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="p-1.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-bold text-sm">AGY</span>
+                    <h1 class="text-lg md:text-xl font-bold tracking-tight text-[var(--foreground)]">Antigravity AI 股票投研智能内参</h1>
+                    <span class="text-xs px-2.5 py-1 rounded-full font-semibold bg-[var(--primary)]/10 text-[var(--primary)] border border-[var(--primary)]/20">早盘异动确认 (10:00)</span>
+                </div>
+                <p class="text-xs text-[var(--muted-foreground)] mt-1">
+                    生成时间: <span class="font-mono">2026-10-14 14:49:58</span> | 投研引擎: <span class="font-medium text-[var(--foreground)]">Antigravity Multi-Agent Pod</span>
+                </p>
+            </div>
+            <div>
+                <a href="https://52etf.site/" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--card)] hover:bg-[var(--border)] border border-[var(--border)] text-xs font-medium text-[var(--foreground)] transition-colors">
+                    <span>🔗 策略与ETF参考通道</span>
+                    <span class="text-[var(--primary)] font-bold font-mono">52etf.site</span>
+                </a>
+            </div>
+        </header>
+
+        <!-- 第一部分：大盘指数卡片 -->
+        <section class="space-y-2">
+            <h2 class="text-xs font-bold text-[var(--muted-foreground)] uppercase tracking-wider">大盘核心指数</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                
+            <div class="p-4 rounded-xl border border-[var(--border)] bg-[var(--card)] flex flex-col justify-between shadow-sm">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">上证指数</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full font-medium text-rose-500 bg-rose-500/10">-0.94%</span>
+                </div>
+                <div class="text-2xl font-bold text-rose-500">3765.25</div>
+            </div>
+            
+            <div class="p-4 rounded-xl border border-[var(--border)] bg-[var(--card)] flex flex-col justify-between shadow-sm">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">科创50</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full font-medium text-rose-500 bg-rose-500/10">-3.41%</span>
+                </div>
+                <div class="text-2xl font-bold text-rose-500">1378.57</div>
+            </div>
+            
+            <div class="p-4 rounded-xl border border-[var(--border)] bg-[var(--card)] flex flex-col justify-between shadow-sm">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">深证成指</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full font-medium text-rose-500 bg-rose-500/10">-2.02%</span>
+                </div>
+                <div class="text-2xl font-bold text-rose-500">12104.3</div>
+            </div>
+            
+            <div class="p-4 rounded-xl border border-[var(--border)] bg-[var(--card)] flex flex-col justify-between shadow-sm">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">创业板指</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full font-medium text-rose-500 bg-rose-500/10">-3.17%</span>
+                </div>
+                <div class="text-2xl font-bold text-rose-500">2864.54</div>
+            </div>
+            
+            </div>
+        </section>
+
+        <!-- 第二部分：领涨热点行业 -->
+        <section class="space-y-2">
+            <h2 class="text-xs font-bold text-[var(--muted-foreground)] uppercase tracking-wider">领涨热点板块 Top 5</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+                
+            <div class="flex items-center justify-between px-3 py-2 rounded-lg bg-[var(--background)] border border-[var(--border)]">
+                <span class="text-xs font-medium text-[var(--foreground)]">暂无板块数据</span>
+                <span class="text-xs font-bold text-emerald-500">+0.0%</span>
+            </div>
+            
+            </div>
+        </section>
+
+        <!-- 第三部分：自选股与持仓风控雷达 -->
+        <section class="space-y-2">
+            <div class="flex justify-between items-center">
+                <h2 class="text-xs font-bold text-[var(--muted-foreground)] uppercase tracking-wider">自选跟踪与持仓风控雷达</h2>
+                <span class="text-xs text-[var(--muted-foreground)]">实时量化扫描</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                
+            <div class="p-4 rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h4 class="text-sm font-bold text-[var(--foreground)]">移远通信</h4>
+                                <span class="text-xs px-1.5 py-0.5 rounded bg-[var(--background)] border border-[var(--border)] text-[var(--muted-foreground)] font-mono">603236</span>
+                            </div>
+                            <span class="text-xs text-[var(--muted-foreground)]">通信设备 / 物联网</span>
+                        </div>
+                        <span class="text-xs px-2 py-0.5 rounded-full font-medium bg-blue-500/10 text-blue-500">持仓中 (安全)</span>
+                    </div>
+
+                    <div class="flex items-baseline gap-3 my-2">
+                        <span class="text-2xl font-black text-rose-500">69.95</span>
+                        <span class="text-sm font-bold text-rose-500">-0.63%</span>
+                        <span class="text-xs text-[var(--muted-foreground)]">成交额: 8.05亿</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 text-xs bg-[var(--background)] p-2.5 rounded-lg border border-[var(--border)]">
+                        <div><span class="text-[var(--muted-foreground)]">MA5:</span> <span class="font-mono text-[var(--foreground)]">70.438</span></div>
+                        <div><span class="text-[var(--muted-foreground)]">MA20:</span> <span class="font-mono text-[var(--foreground)]">68.962</span></div>
+                        <div class="col-span-2"><span class="text-[var(--muted-foreground)]">趋势:</span> <span class="font-medium text-[var(--foreground)]">震荡偏强 (站上生命线)</span></div>
+                    </div>
+                </div>
+
+                
+                <div class="mt-3 pt-3 border-t border-[var(--border)] grid grid-cols-3 gap-2 text-xs">
+                    <div><span class="text-[var(--muted-foreground)]">持仓成本:</span> <span class="font-semibold text-[var(--foreground)]">68.5元</span></div>
+                    <div><span class="text-[var(--muted-foreground)]">当前浮动:</span> <span class="font-bold text-emerald-500">+2.12%</span></div>
+                    <div><span class="text-[var(--muted-foreground)]">止损参考:</span> <span class="font-semibold text-rose-500">64.39元</span></div>
+                </div>
+                
+            </div>
+            
+            <div class="p-4 rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h4 class="text-sm font-bold text-[var(--foreground)]">东方财富</h4>
+                                <span class="text-xs px-1.5 py-0.5 rounded bg-[var(--background)] border border-[var(--border)] text-[var(--muted-foreground)] font-mono">300059</span>
+                            </div>
+                            <span class="text-xs text-[var(--muted-foreground)]">证券 / 互联网金融</span>
+                        </div>
+                        <span class="text-xs px-2 py-0.5 rounded-full font-medium bg-[var(--background)] border border-[var(--border)] text-[var(--muted-foreground)]">自选跟踪</span>
+                    </div>
+
+                    <div class="flex items-baseline gap-3 my-2">
+                        <span class="text-2xl font-black text-rose-500">17.96</span>
+                        <span class="text-sm font-bold text-rose-500">-0.55%</span>
+                        <span class="text-xs text-[var(--muted-foreground)]">成交额: 19.57亿</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 text-xs bg-[var(--background)] p-2.5 rounded-lg border border-[var(--border)]">
+                        <div><span class="text-[var(--muted-foreground)]">MA5:</span> <span class="font-mono text-[var(--foreground)]">17.784</span></div>
+                        <div><span class="text-[var(--muted-foreground)]">MA20:</span> <span class="font-mono text-[var(--foreground)]">18.261</span></div>
+                        <div class="col-span-2"><span class="text-[var(--muted-foreground)]">趋势:</span> <span class="font-medium text-[var(--foreground)]">震荡偏弱 (受压于20日线)</span></div>
+                    </div>
+                </div>
+
+                <div class="mt-3 pt-2 border-t border-[var(--border)] text-xs text-[var(--muted-foreground)]">观察仓位 (未建仓)</div>
+            </div>
+            
+            <div class="p-4 rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h4 class="text-sm font-bold text-[var(--foreground)]">科创芯片ETF嘉实</h4>
+                                <span class="text-xs px-1.5 py-0.5 rounded bg-[var(--background)] border border-[var(--border)] text-[var(--muted-foreground)] font-mono">588200</span>
+                            </div>
+                            <span class="text-xs text-[var(--muted-foreground)]">半导体芯片 / 科技成长</span>
+                        </div>
+                        <span class="text-xs px-2 py-0.5 rounded-full font-bold bg-rose-500 text-white animate-pulse">🚨 硬性止损</span>
+                    </div>
+
+                    <div class="flex items-baseline gap-3 my-2">
+                        <span class="text-2xl font-black text-rose-500">0.958</span>
+                        <span class="text-sm font-bold text-rose-500">-3.82%</span>
+                        <span class="text-xs text-[var(--muted-foreground)]">成交额: 16.53亿</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 text-xs bg-[var(--background)] p-2.5 rounded-lg border border-[var(--border)]">
+                        <div><span class="text-[var(--muted-foreground)]">MA5:</span> <span class="font-mono text-[var(--foreground)]">1.023</span></div>
+                        <div><span class="text-[var(--muted-foreground)]">MA20:</span> <span class="font-mono text-[var(--foreground)]">1.107</span></div>
+                        <div class="col-span-2"><span class="text-[var(--muted-foreground)]">趋势:</span> <span class="font-medium text-[var(--foreground)]">空头排列 (弱势寻底)</span></div>
+                    </div>
+                </div>
+
+                
+                <div class="mt-3 pt-3 border-t border-[var(--border)] grid grid-cols-3 gap-2 text-xs">
+                    <div><span class="text-[var(--muted-foreground)]">持仓成本:</span> <span class="font-semibold text-[var(--foreground)]">1.02元</span></div>
+                    <div><span class="text-[var(--muted-foreground)]">当前浮动:</span> <span class="font-bold text-rose-500">-6.08%</span></div>
+                    <div><span class="text-[var(--muted-foreground)]">止损参考:</span> <span class="font-semibold text-rose-500">0.969元</span></div>
+                </div>
+                
+            </div>
+            
+            <div class="p-4 rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h4 class="text-sm font-bold text-[var(--foreground)]">恒生科技ETF华夏</h4>
+                                <span class="text-xs px-1.5 py-0.5 rounded bg-[var(--background)] border border-[var(--border)] text-[var(--muted-foreground)] font-mono">513180</span>
+                            </div>
+                            <span class="text-xs text-[var(--muted-foreground)]">港股科技 / 互联网巨头</span>
+                        </div>
+                        <span class="text-xs px-2 py-0.5 rounded-full font-medium bg-[var(--background)] border border-[var(--border)] text-[var(--muted-foreground)]">自选跟踪</span>
+                    </div>
+
+                    <div class="flex items-baseline gap-3 my-2">
+                        <span class="text-2xl font-black text-emerald-500">0.524</span>
+                        <span class="text-sm font-bold text-emerald-500">+1.16%</span>
+                        <span class="text-xs text-[var(--muted-foreground)]">成交额: 24.81亿</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 text-xs bg-[var(--background)] p-2.5 rounded-lg border border-[var(--border)]">
+                        <div><span class="text-[var(--muted-foreground)]">MA5:</span> <span class="font-mono text-[var(--foreground)]">0.523</span></div>
+                        <div><span class="text-[var(--muted-foreground)]">MA20:</span> <span class="font-mono text-[var(--foreground)]">0.543</span></div>
+                        <div class="col-span-2"><span class="text-[var(--muted-foreground)]">趋势:</span> <span class="font-medium text-[var(--foreground)]">震荡偏弱 (受压于20日线)</span></div>
+                    </div>
+                </div>
+
+                <div class="mt-3 pt-2 border-t border-[var(--border)] text-xs text-[var(--muted-foreground)]">观察仓位 (未建仓)</div>
+            </div>
+            
+            </div>
+        </section>
+
+        <!-- 第四部分：首席策略师深度内参 -->
+        <section class="p-5 rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-sm space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-[var(--border)]">
+                <div class="flex items-center gap-2">
+                    <span class="text-base">🧠</span>
+                    <h2 class="text-sm md:text-base font-bold text-[var(--foreground)]">首席投资总监 (Chief Strategist) 决策报告</h2>
+                </div>
+                <span class="text-xs text-[var(--muted-foreground)]">DeepSeek 驱动</span>
+            </div>
+            <div class="prose max-w-none text-xs md:text-sm text-[var(--foreground)] leading-relaxed whitespace-pre-wrap font-sans">
+🔗 官方策略跟踪与参考通道：https://52etf.site/
+
+# 【10:00 早盘情绪确认与异动预警内参】
+> 分析引擎: `Google Antigravity Native Quantitative Pod` | 评估时间: `2026-10-14 14:49:58`
+
+## 一、 宏观与板块全景定性
+当前市场格局定性为：**【整体偏空震荡，主要成长与科技板块失血，资金避险情绪浓厚】**。
+- **宽基表现**：上证指数 (-0.94%)、科创50 (-3.41%)、深证成指 (-2.02%)、创业板指 (-3.17%)。
+- **领涨先锋板块**：暂无板块数据 (+0.0%)。
+- **自选重点板块**：通信设备 (+0.0%)、半导体 (+0.0%)、证券 (+0.0%)、消费电子 (+0.0%)。
+- **操盘基调**：防守优先，严控仓位，禁止盲目左侧抄底。
+
+---
+
+## 二、 跟踪标的逐一深度诊断
+
+### 标的：移远通信 (603236) ｜ STOCK ｜ 持仓中 (成本: 68.5元 | 浮动: +2.12% | 止损参考: 64.39元)
+- **【量价与形态】**：现价 `69.95元` (-0.63%)，成交额 `8.05亿元`。MA5: `70.438`，MA20: `68.962`，形态评定：**震荡偏强 (站上生命线)**。
+- **【个人策略提示】**：关注5日均线支撑，以及物联网模组与中报业绩释放力度，若破20日线坚决执行减仓纪律。
+- **【资讯与事件】**：通信行业资金流出榜：新易盛等8股净流出资金超亿元 | 通信行业10月12日资金流向日报
+- **【风控与决议】**：均线受压，浮盈 2.12%。短期动能趋缓，跌破生命线需执行主动减仓。
+- **【操作结论：观望防守】**
+
+### 标的：东方财富 (300059) ｜ STOCK ｜ 未建仓 (自选观察)
+- **【量价与形态】**：现价 `17.96元` (-0.55%)，成交额 `19.57亿元`。MA5: `17.784`，MA20: `18.261`，形态评定：**震荡偏弱 (受压于20日线)**。
+- **【个人策略提示】**：两市风向标，放量突破再考虑参与。
+- **【资讯与事件】**：创业板公司融资余额三连降 其间累计减少97.30亿元 | 18股特大单净流入资金超2亿元
+- **【风控与决议】**：受压于均线或处于弱势震荡期，左侧不盲目抄底，等待右侧放量突破信号。
+- **【操作结论：空仓观望】**
+
+### 标的：科创芯片ETF嘉实 (588200) ｜ ETF ｜ 持仓中 (成本: 1.02元 | 浮动: -6.08% | 止损参考: 0.969元)
+- **【量价与形态】**：现价 `0.958元` (-3.82%)，成交额 `16.53亿元`。MA5: `1.023`，MA20: `1.107`，形态评定：**空头排列 (弱势寻底)**。
+- **【个人策略提示】**：半导体国产替代核心工具，严格执行止损纪律。
+- **【资讯与事件】**：芯片端新品周期临近，渗透率与单机价值量双升，科创芯片ETF嘉实588200备受市场资金关注 | AI服务器带动高端存储需求快速增长，科创芯片ETF嘉实588200获资金持续流入
+- **【风控与决议】**：🚨 **跌破止损底线！** 现价 0.958 元已击穿预设止损价 0.969 元 (浮亏 -6.08%)。严守纪律，坚决止损避险，严禁死扛！
+- **【操作结论：坚决止损】**
+
+### 标的：恒生科技ETF华夏 (513180) ｜ ETF ｜ 未建仓 (自选观察)
+- **【量价与形态】**：现价 `0.524元` (+1.16%)，成交额 `24.81亿元`。MA5: `0.523`，MA20: `0.543`，形态评定：**震荡偏弱 (受压于20日线)**。
+- **【个人策略提示】**：外资流动性敏感品种，右侧突破跟进。
+- **【资讯与事件】**：恒生科技指数创年内新低，资金逆势流入恒生科技ETF华夏（513180） | 港股市场反弹，恒生科技指数涨超1%
+- **【风控与决议】**：受压于均线或处于弱势震荡期，左侧不盲目抄底，等待右侧放量突破信号。
+- **【操作结论：空仓观望】**
+
+---
+
+## 三、 日内交易纪律执行清单
+
+| 优先级 | 操作标的 | 纪律触发条件 |
+| :--- | :--- | :--- |
+| ⚪ 减速跟踪 | 移远通信(603236) | 均线受压，关注破位风险 |
+| ⚪ 观察等待 | 东方财富(300059) | 未见右侧信号，暂不建仓 |
+| 🔴 紧急止损 | 科创芯片ETF嘉实(588200) | 已破止损位 0.969，坚决离场 |
+| ⚪ 观察等待 | 恒生科技ETF华夏(513180) | 未见右侧信号，暂不建仓 |
+
+**Antigravity 投研纪律总则**：交易以保住本金为最高前提，纪律必须在触及条件瞬间无条件执行，严禁受主观侥幸心理干扰！
+            </div>
+        </section>
+
+        <!-- 页脚声明 -->
+        <footer class="pt-4 text-center text-xs text-[var(--muted-foreground)] border-t border-[var(--border)]">
+            Antigravity Quantitative Investment Pod &bull; 决策仅供技术参考，据此交易风险自负 &bull; <a href="https://52etf.site/" class="underline text-[var(--primary)]">https://52etf.site/</a>
+        </footer>
+    </div>
+</body>
+</html>
